@@ -16,9 +16,9 @@ RUN apt-get update &&  DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
   bison \
   build-essential \
   chrpath \
-  # clang \
+  clang \
   cpio \
-  # curl \
+  curl \
   debianutils \
   device-tree-compiler \
   diffstat \
@@ -35,7 +35,7 @@ RUN apt-get update &&  DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
   iputils-ping \
   kmod \
   lib32z1-dev \
-  # libclang-dev \
+  libclang-dev \
   libegl1-mesa \
   libglib2.0-dev \
   libgtk2.0-0 \
@@ -47,7 +47,7 @@ RUN apt-get update &&  DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
   libtinfo5 \
   libtool \
   libtool-bin \
-  # llvm-dev \
+  llvm-dev \
   locales \
   lsb-release \
   make \
@@ -94,11 +94,13 @@ ARG PETA_RUN_FILE
 RUN locale-gen en_US.UTF-8 && update-locale
 
 #make a Vivado user
-RUN adduser --disabled-password --gecos '' vivado && \
+RUN addgroup --gid 1000 vivado && \
+  adduser --disabled-password --firstuid 1000 --gid 1000 --gecos '' vivado && \
   usermod -aG sudo vivado && \
   echo "vivado ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 COPY accept-eula.sh ${PETA_RUN_FILE} /
+ADD install_drivers /install_drivers
 
 # run the install
 RUN chmod a+rx /${PETA_RUN_FILE} && \
@@ -118,6 +120,9 @@ ENV HOME /home/vivado
 ENV LANG en_US.UTF-8
 RUN mkdir /home/vivado/projects
 WORKDIR /home/vivado/projects
+
+# RUN sudo mkdir -p /etc/udev/rules.d/
+# RUN cd /install_drivers && sudo ./install_drivers && sudo rm -r /install_drivers
 
 #add vivado tools to path
 RUN echo "source /opt/Xilinx/petalinux/settings.sh" >> /home/vivado/.bashrc
