@@ -1,1 +1,10 @@
-docker run -ti --rm -e DISPLAY=$DISPLAY --net="host" -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/home/vivado/.Xauthority -v /media/data/peta:/home/vivado/projects petalinux:2022.2 /bin/bash
+#!/bin/bash
+
+echo
+echo "To pass the project source dir, use:"
+echo "$0 -v /src/project:/home/vivado/projects"
+echo
+echo "Running:"
+
+set -x
+docker run -ti --rm --net=host $@ petalinux:latest
