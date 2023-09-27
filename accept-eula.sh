@@ -3,7 +3,7 @@ set timeout -1
 set install_dir [lindex $argv 1]
 set installer [lindex $argv 0]
 
-spawn $installer -d $install_dir -p "aarch64"
+spawn $installer -d $install_dir
 
 set timeout 600
 expect "Press Enter to display the license agreements"
